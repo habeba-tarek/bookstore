@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore - New Features Preview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #34495e;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card {
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .wishlist-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .wishlist-btn.active {
+            background-color: #27ae60;
+        }
+
+        .rating {
+            color: #f1c40f;
+        }
+
+        .loyalty-badge {
+            background: linear-gradient(45deg, #f1c40f, #e67e22);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .social-share {
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-share:hover {
+            transform: scale(1.1);
+        }
+
+        .preview-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .book-club-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .book-club-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .reading-challenge {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .reading-challenge:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 0 0 10px 10px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .floating-action-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .floating-action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+
+        .book-preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book-preview-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            border-radius: 15px;
+            margin: 5px;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(155, 89, 182, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(155, 89, 182, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(155, 89, 182, 0.5); }
+        }
+
+        /* New Styles */
+        .book-carousel {
+            padding: 20px 0;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .swiper-slide:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .reading-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .book-club-schedule {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendation-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 20px;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .recommendation-card:hover .recommendation-overlay {
+            transform: translateY(0);
+        }
+
+        .quick-actions-menu {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            z-index: 1000;
+        }
+
+        .quick-actions-menu.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .reading-timer {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .timer-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 10px 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .genre-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .genre-tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .genre-tag:hover {
+            transform: scale(1.05);
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Switch -->
+    <div class="theme-switch">
+        <button class="btn btn-outline-primary" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action-btn" onclick="showQuickActions()">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- Quick Actions Menu -->
+    <div class="quick-actions-menu" id="quickActionsMenu">
+        <div class="action-item" onclick="startReadingTimer()">
+            <i class="fas fa-clock me-2"></i> Start Reading Timer
+        </div>
+        <div class="action-item" onclick="showRecommendations()">
+            <i class="fas fa-book me-2"></i> Get Recommendations
+        </div>
+        <div class="action-item" onclick="joinBookClub()">
+            <i class="fas fa-users me-2"></i> Join Book Club
+        </div>
+        <div class="action-item" onclick="viewReadingHistory()">
+            <i class="fas fa-history me-2"></i> Reading History
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Bookie</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <form class="d-flex mx-auto position-relative">
+                    <input class="form-control me-2" type="search" placeholder="Search books..." id="searchInput">
+                    <div class="search-suggestions" id="searchSuggestions">
+                        <div class="p-2 border-bottom">The Great Gatsby</div>
+                        <div class="p-2 border-bottom">To Kill a Mockingbird</div>
+                        <div class="p-2">1984</div>
+                    </div>
+                </form>
+                <ul class="navbar-nav ms-auto">
+                    <li class="navbar-text text-light me-3 position-relative">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </li>
+                    <li class="navbar-text text-light me-3">
+                        <i class="fas fa-user-circle"></i> Welcome, User
+                    </li>
+                    <li class="navbar-text text-light position-relative">
+                        <i class="fas fa-shopping-cart"></i> Cart (3)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4 animate__animated animate__fadeIn">New Features Preview</h2>
+
+        <!-- Reading Stats -->
+        <div class="reading-stats mb-4">
+            <div class="stat-card">
+                <i class="fas fa-book-open fa-2x mb-2"></i>
+                <div class="stat-number">42</div>
+                <div>Books Read</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock fa-2x mb-2"></i>
+                <div class="stat-number">156</div>
+                <div>Reading Hours</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-star fa-2x mb-2"></i>
+                <div class="stat-number">28</div>
+                <div>Reviews Written</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-trophy fa-2x mb-2"></i>
+                <div class="stat-number">5</div>
+                <div>Achievements</div>
+            </div>
+        </div>
+
+        <!-- Book Carousel -->
+        <div class="book-carousel mb-4">
+            <h3 class="mb-3">Recommended for You</h3>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://via.placeholder.com/150x200" alt="Book Cover" class="book-cover">
+                        <h5>The Great Gatsby</h5>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Classic</span>
+                            <span class="genre-tag">Fiction</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://via.placeholder.com/150x200" alt="Book Cover" class="book-cover">
+                        <h5>To Kill a Mockingbird</h5>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Classic</span>
+                            <span class="genre-tag">Drama</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://via.placeholder.com/150x200" alt="Book Cover" class="book-cover">
+                        <h5>1984</h5>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Dystopian</span>
+                            <span class="genre-tag">Science Fiction</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+
+        <!-- Wishlist Feature -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="feature-card p-4">
+                    <h3><i class="fas fa-heart text-danger"></i> Wishlist</h3>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>The Great Gatsby</h5>
+                        <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                            <i class="fas fa-heart"></i> Add to Wishlist
+                        </button>
+                    </div>
+                    <p>Save your favorite books and get notified when prices drop!</p>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-danger" style="width: 75%">75% of readers want this</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Feature -->
+            <div class="col-md-6">
+                <div class="feature-card p-4">
+                    <h3><i class="fas fa-star text-warning"></i> Reviews & Ratings</h3>
+                    <div class="rating mb-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="text-dark ms-2">4.5/5</span>
+                    </div>
+                    <p>"Amazing book! Couldn't put it down." - Verified Purchase</p>
+                    <button class="btn btn-outline-primary btn-sm" onclick="showReviewForm()">Write a Review</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loyalty Program -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="feature-card p-4">
+                    <h3><i class="fas fa-crown text-warning"></i> Loyalty Program</h3>
+                    <div class="loyalty-badge mb-3">Gold Member</div>
+                    <p>Current Points: 2,500</p>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-warning" style="width: 75%"></div>
+                    </div>
+                    <p>250 points until next tier!</p>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-warning btn-sm">View Rewards</button>
+                        <button class="btn btn-outline-warning btn-sm">Redeem Points</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Features -->
+            <div class="col-md-6">
+                <div class="feature-card p-4">
+                    <h3><i class="fas fa-users text-primary"></i> Social Features</h3>
+                    <div class="social-share mb-3">
+                        <i class="fab fa-facebook me-2"></i>
+                        <i class="fab fa-twitter me-2"></i>
+                        <i class="fab fa-instagram me-2"></i>
+                        Share your reading journey!
+                    </div>
+                    <p>Join book clubs and connect with other readers!</p>
+                    <div class="book-club-card p-3 rounded mb-3">
+                        <h5>Classic Literature Club</h5>
+                        <p class="mb-0">Next meeting: March 15, 2024</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading Challenge -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="feature-card p-4 reading-challenge">
+                    <h3><i class="fas fa-trophy"></i> Reading Challenge</h3>
+                    <p>Your 2024 Reading Goal: 50 books</p>
+                    <div class="progress mb-3 bg-white">
+                        <div class="progress-bar bg-success" style="width: 40%">20/50 books</div>
+                    </div>
+                    <button class="btn btn-light btn-sm">Update Progress</button>
+                </div>
+            </div>
+
+            <!-- Book Preview -->
+            <div class="col-md-6">
+                <div class="feature-card p-4">
+                    <h3><i class="fas fa-book-open text-success"></i> Book Preview</h3>
+                    <div class="preview-section">
+                        <p class="fst-italic">"In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since..."</p>
+                        <button class="btn btn-primary" onclick="showPreview()">Read Sample</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading Timer -->
+        <div class="reading-timer">
+            <h3><i class="fas fa-clock"></i> Reading Timer</h3>
+            <div class="timer-display">00:00:00</div>
+            <div class="timer-controls">
+                <button class="btn btn-primary" onclick="startTimer()">
+                    <i class="fas fa-play"></i> Start
+                </button>
+                <button class="btn btn-warning" onclick="pauseTimer()">
+                    <i class="fas fa-pause"></i> Pause
+                </button>
+                <button class="btn btn-danger" onclick="resetTimer()">
+                    <i class="fas fa-stop"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Book Club Schedule -->
+        <div class="book-club-schedule">
+            <h3><i class="fas fa-calendar"></i> Upcoming Book Club Meetings</h3>
+            <div class="schedule-item">
+                <div>
+                    <h5>Classic Literature Club</h5>
+                    <p class="mb-0">The Great Gatsby Discussion</p>
+                </div>
+                <div class="text-end">
+                    <div>March 15, 2024</div>
+                    <small>7:00 PM EST</small>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <div>
+                    <h5>Science Fiction Club</h5>
+                    <p class="mb-0">1984 Analysis</p>
+                </div>
+                <div class="text-end">
+                    <div>March 20, 2024</div>
+                    <small>8:00 PM EST</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Preview Modal -->
+    <div class="book-preview-modal" id="bookPreviewModal">
+        <div class="book-preview-content">
+            <h3>The Great Gatsby</h3>
+            <p class="fst-italic">"In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since..."</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <button class="btn btn-primary" onclick="closePreview()">Close</button>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 BookStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div class="notification-toast">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                New feature available: Reading Challenge!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+            const themeIcon = document.querySelector('.theme-switch i');
+            themeIcon.classList.toggle('fa-moon');
+            themeIcon.classList.toggle('fa-sun');
+        }
+
+        // Toggle wishlist button
+        function toggleWishlist(button) {
+            button.classList.toggle('active');
+            if (button.classList.contains('active')) {
+                button.innerHTML = '<i class="fas fa-heart"></i> Added to Wishlist';
+                showNotification('Book added to wishlist!');
+            } else {
+                button.innerHTML = '<i class="fas fa-heart"></i> Add to Wishlist';
+                showNotification('Book removed from wishlist');
+            }
+        }
+
+        // Show notification toast
+        function showNotification(message) {
+            const toast = document.querySelector('.toast');
+            const toastBody = toast.querySelector('.toast-body');
+            toastBody.textContent = message;
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+
+        // Show review form
+        function showReviewForm() {
+            showNotification('Review form will open in a new window');
+        }
+
+        // Show book preview
+        function showPreview() {
+            const modal = document.getElementById('bookPreviewModal');
+            modal.style.display = 'flex';
+        }
+
+        // Close book preview
+        function closePreview() {
+            const modal = document.getElementById('bookPreviewModal');
+            modal.style.display = 'none';
+        }
+
+        // Quick actions menu
+        function showQuickActions() {
+            const menu = document.getElementById('quickActionsMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Search suggestions
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('focus', () => {
+            searchSuggestions.classList.add('active');
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                searchSuggestions.classList.remove('active');
+            }, 200);
+        });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Animate progress bars on scroll
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.getAttribute('style').split(':')[1];
+                }
+            });
+        });
+
+        progressBars.forEach(bar => {
+            observer.observe(bar);
+        });
+
+        // Initialize Swiper
+        const swiper = new Swiper('.swiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+            },
+        });
+
+        // Reading Timer
+        let timerInterval;
+        let seconds = 0;
+        const timerDisplay = document.querySelector('.timer-display');
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            seconds = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimer() {
+            seconds++;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        // Quick Actions Menu
+        function showQuickActions() {
+            const menu = document.getElementById('quickActionsMenu');
+            menu.classList.toggle('active');
+        }
+
+        function startReadingTimer() {
+            showQuickActions();
+            startTimer();
+            showNotification('Reading timer started!');
+        }
+
+        function showRecommendations() {
+            showQuickActions();
+            showNotification('Loading personalized recommendations...');
+        }
+
+        function joinBookClub() {
+            showQuickActions();
+            showNotification('Redirecting to book club registration...');
+        }
+
+        function viewReadingHistory() {
+            showQuickActions();
+            showNotification('Opening reading history...');
+        }
+
+        // Genre Tags
+        document.querySelectorAll('.genre-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                showNotification(`Filtering by ${tag.textContent}...`);
+            });
+        });
+
+        // Close quick actions menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('quickActionsMenu');
+            const fab = document.querySelector('.floating-action-btn');
+            if (!menu.contains(e.target) && !fab.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html> 

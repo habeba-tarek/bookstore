@@ -1,33 +1,15 @@
 # bookstore
-Bookiee is a PHP-based e-commerce web application for an online bookstore. It allows users to browse, search, and purchase books, manage shopping carts and orders, and contact support. An admin dashboard is provided for managing products, orders, users, and messages.
 
-Technologies:
-Frontend: HTML, CSS, JavaScript
-Backend: PHP
-Database: MySQL
-
-System Features:
-User Side:
-Register & login
-Browse/search books
-Add to cart, manage cart
-Place orders & checkout with delivery details
-View order history & status
-Contact support for queries
-
-Admin Side:
-Admin login
-Dashboard for analytics (users, products, messages, orders)
-Manage books (add, update, delete)
-Track and update orders (pending/completed)
-Manage user accounts (delete/remove)
-Handle messages
-
-System Architecture:
-
-3-tier architecture (Presentation, Business Logic, Data)
-Presentation Layer: HTML/CSS/JS interfaces (user & admin pages)
-
-Business Logic: PHP scripts handling requests, cart management, orders, authentication
-
-Data Layer: MySQL database with tables: register, products, cart, orders, message
+Developed using HTML, CSS, JavaScript, and PHP technologies</br>
+Features : </br>
+<ul>
+  <li>Admin and user login functionality</li>
+  <li>Admin dashboard for product management, order tracking, user removal, message handling, Record keeping of pending and completed payments, overview of total admin and user accounts</li>
+  <li>User-friendly cart system with the ability to add, search, and delete items</li>
+  <li>Intuitive search functionality for quick product discovery</li>
+  <li>Checkout process to add delivery details</li>
+  <li>User messaging system for queries and assistance</li>
+</ul>
+</br>
+Output :
+![image](https://github.com/tanishahaha/bookstore/assets/123636127/058007f4-2a15-4e28-9125-201278497939)
